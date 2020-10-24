@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,10 +13,15 @@ public class GameManager : MonoBehaviour
          new Vector3(1,-3,-1), new Vector3(3,-3,-1)};
     private int poachersEscaped;
     private bool gameOver;
+    public Text scoreText, levelText, escapedText, gameOverText;
 
     // Start is called before the first frame update
     void Start()
     {
+        scoreText.text = "0";
+        levelText.text = "LEVEL 1";
+        escapedText.text = "ESCAPED 3";
+        gameOverText.enabled = false;
         poachersEscaped = 0;
         level = 0;
         gameOver = false;
@@ -26,10 +32,12 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(3);
         level++;
+        levelText.text = "LEVEL " + level;
 
         if (level % 5 == 0)
         {
             poachersEscaped = 0;
+            escapedText.text = "ESCAPED 3";
         }
 
         wavesLeft = (int)Mathf.Ceil(level/2f);
@@ -60,6 +68,9 @@ public class GameManager : MonoBehaviour
     public void PoacherEscaped()
     {
         poachersEscaped++;
+        if (poachersEscaped > 3)
+            poachersEscaped = 3;
+        escapedText.text = "ESCAPED "+(3-poachersEscaped);
         if (poachersEscaped >= 3 && !gameOver)
         {
             gameOver = true;
@@ -69,6 +80,7 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
+        gameOverText.enabled = true;
         Poacher[] poachers = FindObjectsOfType<Poacher>();
         for (int i = 0; i < poachers.Length; i++)
         {

@@ -60,7 +60,7 @@ public class Poacher : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && !dead)
         {
-            
+            gM.scoreText.text =  (Convert.ToInt32(gM.scoreText.text) + 1).ToString();
             sR.sprite = deathSpriteRenderer.sprite;
             name = "DeadPoacher";
             gM.LevelOver();
