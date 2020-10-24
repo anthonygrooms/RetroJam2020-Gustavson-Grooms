@@ -11,7 +11,7 @@ public class Poacher : MonoBehaviour
     public SpriteRenderer[] frames = new SpriteRenderer[2];
     private SpriteRenderer sP;
     public SpriteRenderer deathSpriteRenderer;
-    public GameManager gM;
+    private GameManager gM;
     private bool dead;
     
     // Start is called before the first frame update
@@ -19,6 +19,7 @@ public class Poacher : MonoBehaviour
     {
         rB = GetComponent<Rigidbody2D>();
         sP = GetComponent<SpriteRenderer>();
+        gM = FindObjectOfType<GameManager>();
         dead = false;
 
         startPos = transform.position;
@@ -59,7 +60,6 @@ public class Poacher : MonoBehaviour
         {
             dead = true;
             rB.velocity = Vector2.zero;
-            StopCoroutine(PlayAnimation());
             sP.sprite = deathSpriteRenderer.sprite;
             name = "DeadPoacher";
             gM.LevelOver();
