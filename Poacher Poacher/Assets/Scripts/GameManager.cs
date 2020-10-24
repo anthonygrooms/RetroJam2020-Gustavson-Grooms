@@ -6,23 +6,24 @@ public class GameManager : MonoBehaviour
 {
     public GameObject poacher;
     private int wavesLeft;
-    private int level;
+    public int level;
     public static readonly Vector3[] spawnPositions = new Vector3[]
-        {new Vector3(-3,-3,0), new Vector3(-1,-3,0),
-         new Vector3(1,-3,0), new Vector3(3,-3,0)};
+        {new Vector3(-3,-3,-1), new Vector3(-1,-3,-1),
+         new Vector3(1,-3,-1), new Vector3(3,-3,-1)};
     private int poachersEscaped;
+    private bool gameOver;
 
     // Start is called before the first frame update
     void Start()
     {
         poachersEscaped = 0;
         level = 0;
+        gameOver = false;
         StartCoroutine(NextLevel());
     }
 
     public IEnumerator NextLevel()
     {
-        print("loading...");
         yield return new WaitForSeconds(3);
         level++;
 
@@ -37,7 +38,7 @@ public class GameManager : MonoBehaviour
         {
             int iMaximum = (level % 2 == 0 && wavesLeft == 1 ? 3 : 2);
             List<int> randomNumbers = new List<int>();
-            for (int i = 1; i <= iMaximum; i++)
+            for (int i = 1; i <= iMaximum && !gameOver; i++)
             {
                 int randomNumber = Random.Range(0, 4);
                 while (randomNumbers.Contains(randomNumber))
@@ -46,30 +47,34 @@ public class GameManager : MonoBehaviour
                 Instantiate(poacher, spawnPositions[randomNumber], Quaternion.identity);
             }
             wavesLeft--;
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(2);
         }
     }
 
     public void LevelOver()
     {
-        print(wavesLeft);
-        print(!GameObject.Find("Poacher(Clone)"));
-        if (wavesLeft == 0 && !GameObject.Find("Poacher(Clone)"))
+        if (wavesLeft == 0 && !GameObject.Find("Poacher(Clone)") && !gameOver)
             StartCoroutine(NextLevel());
     }
 
     public void PoacherEscaped()
     {
         poachersEscaped++;
-        if (poachersEscaped >= 3)
+        if (poachersEscaped >= 3 && !gameOver)
         {
+            gameOver = true;
             GameOver();
         }
     }
 
     private void GameOver()
     {
-
+        Poacher[] poachers = FindObjectsOfType<Poacher>();
+        for (int i = 0; i < poachers.Length; i++)
+        {
+            poachers[i].dead = true;
+            poachers[i].sR.sprite = null;
+        }
     }
 
     // Update is called once per frame

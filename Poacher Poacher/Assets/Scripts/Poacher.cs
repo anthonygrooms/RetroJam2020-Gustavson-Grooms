@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Poacher : MonoBehaviour
 {
@@ -9,35 +10,36 @@ public class Poacher : MonoBehaviour
     private Vector3 velocity;
     private Rigidbody2D rB;
     public SpriteRenderer[] frames = new SpriteRenderer[2];
-    private SpriteRenderer sP;
+    public SpriteRenderer sR;
     public SpriteRenderer deathSpriteRenderer;
     private GameManager gM;
-    private bool dead;
+    public bool dead;
     
     // Start is called before the first frame update
     void Start()
     {
         rB = GetComponent<Rigidbody2D>();
-        sP = GetComponent<SpriteRenderer>();
+        sR = GetComponent<SpriteRenderer>();
         gM = FindObjectOfType<GameManager>();
         dead = false;
 
         startPos = transform.position;
         switch (startPos.x){
             case -3:
-                velocity = new Vector3(-4, 2, 0) - transform.position;
+                destinationPos = new Vector3(-4, 1.5f, -1);
                 break;
             case -1:
-                velocity = new Vector3(-1, 2, 0) - transform.position;
+                destinationPos = new Vector3(-1, 1.5f, -1);
                 break;
             case 1:
-                velocity = new Vector3(1, 2, 0) - transform.position;
+                destinationPos = new Vector3(1, 1.5f, -1);
                 break;
             default:
-                velocity = new Vector3(4, 2, 0) - transform.position;
+                destinationPos = new Vector3(4, 1.5f, -1);
                 break;
         }
-        rB.velocity = velocity.normalized;
+        velocity = destinationPos - transform.position;
+        rB.velocity = velocity.normalized * UnityEngine.Random.Range(1,gM.level/2f);
         StartCoroutine(PlayAnimation());
     }
 
@@ -49,21 +51,39 @@ public class Poacher : MonoBehaviour
             frame++;
             if (frame > frames.Length-1)
                 frame = 0;
-            sP.sprite = frames[frame].sprite;
+            sR.sprite = frames[frame].sprite;
             yield return new WaitForSeconds(.2f);
         }
     }
 
     void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !dead)
         {
-            dead = true;
-            rB.velocity = Vector2.zero;
-            sP.sprite = deathSpriteRenderer.sprite;
+            
+            sR.sprite = deathSpriteRenderer.sprite;
             name = "DeadPoacher";
             gM.LevelOver();
-            Destroy(gameObject, 3);
+            StartCoroutine(DestroySelf(3));
         }
+    }
+
+    void Update()
+    {
+        if (transform.position.y >= destinationPos.y && name.Equals("Poacher(Clone)"))
+        {
+            gM.PoacherEscaped();
+            name = "EscapedPoacher";
+            gM.LevelOver();
+            StartCoroutine(DestroySelf(0));
+        }
+    }
+
+    public IEnumerator DestroySelf(int t)
+    {
+        dead = true;
+        rB.velocity = Vector2.zero;
+        yield return new WaitForSeconds(t);
+        Destroy(gameObject);
     }
 }
