@@ -10,12 +10,16 @@ public class Poacher : MonoBehaviour
     private Rigidbody2D rB;
     public SpriteRenderer[] frames = new SpriteRenderer[2];
     private SpriteRenderer sP;
+    public SpriteRenderer deathSpriteRenderer;
+    public GameManager gM;
+    private bool dead;
     
     // Start is called before the first frame update
     void Start()
     {
         rB = GetComponent<Rigidbody2D>();
         sP = GetComponent<SpriteRenderer>();
+        dead = false;
 
         startPos = transform.position;
         switch (startPos.x){
@@ -39,7 +43,7 @@ public class Poacher : MonoBehaviour
     public IEnumerator PlayAnimation()
     {
         int frame = -1;
-        while (true)
+        while (!dead)
         {
             frame++;
             if (frame > frames.Length-1)
@@ -49,9 +53,17 @@ public class Poacher : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnMouseOver()
     {
-        
+        if (Input.GetMouseButtonDown(0))
+        {
+            dead = true;
+            rB.velocity = Vector2.zero;
+            StopCoroutine(PlayAnimation());
+            sP.sprite = deathSpriteRenderer.sprite;
+            name = "DeadPoacher";
+            gM.LevelOver();
+            Destroy(gameObject, 3);
+        }
     }
 }
