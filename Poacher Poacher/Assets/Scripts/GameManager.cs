@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour
         Poacher[] poachers = FindObjectsOfType<Poacher>();
         for (int i = 0; i < poachers.Length; i++)
         {
+            poachers[i].rB.velocity = Vector2.zero;
             poachers[i].dead = true;
             poachers[i].sR.sprite = null;
         }

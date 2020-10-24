@@ -8,12 +8,14 @@ public class Poacher : MonoBehaviour
     private Vector3 startPos;
     private Vector3 destinationPos;
     private Vector3 velocity;
-    private Rigidbody2D rB;
+    public Rigidbody2D rB;
     public SpriteRenderer[] frames = new SpriteRenderer[2];
     public SpriteRenderer sR;
     public SpriteRenderer deathSpriteRenderer;
     private GameManager gM;
     public bool dead;
+    private int scaleStep;
+    public SpriteRenderer[] escapedFrames = new SpriteRenderer[4];
     
     // Start is called before the first frame update
     void Start()
@@ -22,20 +24,21 @@ public class Poacher : MonoBehaviour
         sR = GetComponent<SpriteRenderer>();
         gM = FindObjectOfType<GameManager>();
         dead = false;
+        scaleStep = 0;
 
         startPos = transform.position;
         switch (startPos.x){
             case -3:
-                destinationPos = new Vector3(-4, 1.5f, -1);
+                destinationPos = new Vector3(-4, 1.39f, -1);
                 break;
             case -1:
-                destinationPos = new Vector3(-1, 1.5f, -1);
+                destinationPos = new Vector3(-1, 1.39f, -1);
                 break;
             case 1:
-                destinationPos = new Vector3(1, 1.5f, -1);
+                destinationPos = new Vector3(1, 1.39f, -1);
                 break;
             default:
-                destinationPos = new Vector3(4, 1.5f, -1);
+                destinationPos = new Vector3(4, 1.39f, -1);
                 break;
         }
         velocity = destinationPos - transform.position;
@@ -56,10 +59,24 @@ public class Poacher : MonoBehaviour
         }
     }
 
+    public IEnumerator EscapedAnimation()
+    {
+        int frame = 0;
+        while (frame < escapedFrames.Length)
+        {
+            sR.sprite = escapedFrames[frame].sprite;
+            frame++;
+            yield return new WaitForSeconds(.1f);
+        }
+        StartCoroutine(DestroySelf(0));
+    }
+
     void OnMouseOver()
     {
         if (Input.GetMouseButtonDown(0) && !dead)
         {
+            dead = true;
+            rB.velocity = Vector2.zero;
             gM.scoreText.text =  (Convert.ToInt32(gM.scoreText.text) + 1).ToString();
             sR.sprite = deathSpriteRenderer.sprite;
             name = "DeadPoacher";
@@ -70,19 +87,40 @@ public class Poacher : MonoBehaviour
 
     void Update()
     {
+        if (transform.position.y >= -1f && scaleStep==0)
+        {
+            scaleStep++;
+            transform.localScale = new Vector3(transform.localScale.x * .75f, transform.localScale.y * .75f, transform.localScale.z);
+        }
+        if (transform.position.y >= 0f && scaleStep == 1)
+        {
+            scaleStep++;
+            transform.localScale = new Vector3(transform.localScale.x * .75f, transform.localScale.y * .75f, transform.localScale.z);
+        }
+        if (transform.position.y >= 1f && scaleStep == 2)
+        {
+            scaleStep++;
+            transform.localScale = new Vector3(transform.localScale.x * .75f, transform.localScale.y * .75f, transform.localScale.z);
+        }
+        if (transform.position.y >= 1.25f && scaleStep == 3)
+        {
+            scaleStep++;
+            transform.localScale = new Vector3(transform.localScale.x * .75f, transform.localScale.y * .75f, transform.localScale.z);
+        }
+
         if (transform.position.y >= destinationPos.y && name.Equals("Poacher(Clone)"))
         {
+            dead = true;
+            rB.velocity = Vector2.zero;
             gM.PoacherEscaped();
             name = "EscapedPoacher";
             gM.LevelOver();
-            StartCoroutine(DestroySelf(0));
+            StartCoroutine(EscapedAnimation());
         }
     }
 
     public IEnumerator DestroySelf(int t)
     {
-        dead = true;
-        rB.velocity = Vector2.zero;
         yield return new WaitForSeconds(t);
         Destroy(gameObject);
     }
