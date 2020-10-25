@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,7 +21,6 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        FindObjectOfType<Audio_Manager>().Play("Roar");
         FindObjectOfType<Audio_Manager>().Play("Begin Level");
         scoreText.text = "0";
         levelText.text = "LEVEL 1";
@@ -43,7 +43,6 @@ public class GameManager : MonoBehaviour
             frame++;
             yield return new WaitForSeconds(.2f);
         }
-        FindObjectOfType<Audio_Manager>().Play("Roar");
         lion.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
         lion.sprite = lionSprites[2];
         lion.transform.position = new Vector3(lion.transform.position.x, lion.transform.position.y + .402f, -3f);
@@ -116,6 +115,7 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
+        StartCoroutine(Return());
         gameOverText.enabled = true;
         Poacher[] poachers = FindObjectsOfType<Poacher>();
         for (int i = 0; i < poachers.Length; i++)
@@ -124,6 +124,13 @@ public class GameManager : MonoBehaviour
             poachers[i].dead = true;
             poachers[i].sR.sprite = null;
         }
+    }
+
+    private IEnumerator Return()
+    {
+        FindObjectOfType<Audio_Manager>().Play("Game Over");
+        yield return new WaitForSeconds(5);
+        SceneManager.LoadScene(0);
     }
 
     // Update is called once per frame
