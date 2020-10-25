@@ -75,6 +75,7 @@ public class Poacher : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && !dead)
         {
+            FindObjectOfType<Audio_Manager>().Play("Hit");
             dead = true;
             rB.velocity = Vector2.zero;
             gM.scoreText.text =  (Convert.ToInt32(gM.scoreText.text) + 1).ToString();
@@ -87,6 +88,11 @@ public class Poacher : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetMouseButton(0) && !gM.gameOver)
+        {
+            FindObjectOfType<Audio_Manager>().Play("Miss");
+        }
+
         if (transform.position.y >= -1f && scaleStep==0)
         {
             scaleStep++;
