@@ -209,7 +209,8 @@ public class GameManager : MonoBehaviour
         {
             enterNameDirection.text = "ENTER NAME: " + enterNameTimer + "\nUSE UP/DOWN TO NAV, SPACE TO SELECT CHAR,ENTER TO SUBMIT";
             yield return new WaitForSeconds(1);
-            enterNameTimer--;
+            if (enterNameStep < 9)
+                enterNameTimer--;
         }
         if (enterNameTimer == 0)
         {
