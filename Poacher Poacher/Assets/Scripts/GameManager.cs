@@ -207,13 +207,13 @@ public class GameManager : MonoBehaviour
     {
         while (enterNameTimer > 0 && enterNameStep < 9)
         {
-            enterNameDirection.text = "ENTER NAME: " + enterNameTimer + "\nUSE LEFT, RIGHT TO NAV, SPACE TO SELECT CHAR,ENTER TO SUBMIT";
+            enterNameDirection.text = "ENTER NAME: " + enterNameTimer + "\nUSE UP/DOWN TO NAV, SPACE TO SELECT CHAR,ENTER TO SUBMIT";
             yield return new WaitForSeconds(1);
             enterNameTimer--;
         }
         if (enterNameTimer == 0)
         {
-            enterNameDirection.text = "ENTER NAME: " + enterNameTimer + "\nUSE LEFT, RIGHT TO NAV, SPACE TO SELECT CHAR,ENTER TO SUBMIT";
+            enterNameDirection.text = "ENTER NAME: " + enterNameTimer + "\nUSE UP/DOWN TO NAV, SPACE TO SELECT CHAR,ENTER TO SUBMIT";
             enterNameStep = 9;
             PlayerPrefs.SetString("hsp" + newScoreIndex, before + middle);
             StartCoroutine(GoToHighScoreScreen(3));
