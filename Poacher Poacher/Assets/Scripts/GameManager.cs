@@ -17,6 +17,16 @@ public class GameManager : MonoBehaviour
     public Text scoreText, levelText, escapedText, gameOverText;
     public SpriteRenderer lion;
     public Sprite[] lionSprites;
+    public Text enterName;
+    public Text enterNameDirection;
+    public int enterNameTimer;
+    private int enterNameStep;
+    private string before, after;
+    private char middle;
+    private char[] characters = new char[]
+        {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+    private int charIndex;
+    private int newScoreIndex;
 
     // Start is called before the first frame update
     void Start()
@@ -30,12 +40,19 @@ public class GameManager : MonoBehaviour
         poachersEscaped = 0;
         level = 0;
         gameOver = false;
-        StartCoroutine(IntroAnimation());
+        enterNameStep = 0;
+        before = "";
+        middle = 'A';
+        after = "";
+        enterName.enabled = false;
+        enterNameDirection.enabled = false;
+        charIndex = 0;
+    StartCoroutine(IntroAnimation());
     }
 
     public IEnumerator IntroAnimation()
     {
-        lion.GetComponent<Rigidbody2D>().velocity = new Vector2(-3.4285f, 0);
+        lion.GetComponent<Rigidbody2D>().velocity = new Vector2(-3.37f, 0);
         int frame = 0;
         while (frame < 10)
         {
@@ -63,7 +80,7 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator NextLevel(int t)
     {
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.4f);
         FindObjectOfType<Audio_Manager>().Play("Begin Level");
         yield return new WaitForSeconds(t);
         level++;
@@ -130,12 +147,107 @@ public class GameManager : MonoBehaviour
     {
         FindObjectOfType<Audio_Manager>().Play("Game Over");
         yield return new WaitForSeconds(5);
-        SceneManager.LoadScene(0);
+
+        bool newHigh = NewHighScore();
+
+        for (int i = 1; i <= 10; i++)
+        {
+            print(PlayerPrefs.GetInt("hs" + (i), 0));
+        }
+
+        if (newHigh)
+        {
+            enterNameStep = 1;
+            enterName.enabled = true;
+            enterNameDirection.enabled = true;
+            before = "";
+            after = "AAAAAAA";
+            StartCoroutine(Timer());
+            gameOverText.enabled = false;
+        }
+        else
+        {
+            StartCoroutine(GoToHighScoreScreen(0));
+        }
+    }
+
+    private IEnumerator GoToHighScoreScreen(int t)
+    {
+        yield return new WaitForSeconds(t);
+        SceneManager.LoadScene("HighScores");
+    }
+
+    private bool NewHighScore()
+    {
+        int k = 1, s;
+        for (int i = 10; i >= 1; i--)
+        {
+            s = PlayerPrefs.GetInt("hs" + i, 0);
+            if (int.Parse(scoreText.text) <= s)
+            {
+                k = i+1;
+                break;
+            }
+        }
+        bool newHigh = k >= 1 && k <= 10;
+        if (newHigh)
+        {
+            for (int i = 10; i > k; i--)
+            {
+                PlayerPrefs.SetInt("hs" + i, PlayerPrefs.GetInt("hs" + (i - 1), 0));
+                PlayerPrefs.SetString("hsp" + i, PlayerPrefs.GetString("hsp" + (i - 1), ""));
+            }
+            PlayerPrefs.SetInt("hs" + k, int.Parse(scoreText.text));
+            newScoreIndex = k;
+        }
+        return newHigh;
+    }
+
+    private IEnumerator Timer()
+    {
+        while (enterNameTimer > 0)
+        {
+            enterNameTimer--;
+            enterNameDirection.text = "ENTER NAME: " + enterNameTimer + "\nUSE LEFT, RIGHT ENTER";
+            yield return new WaitForSeconds(1);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (enterNameStep > 0 && enterNameStep < 9)
+        {
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                enterNameStep++;
+                if (enterNameStep < 9)
+                    before += middle;
+                else
+                {
+                    print(before + middle);
+                    //PlayerPrefs.SetString("hsp" + newScoreIndex, before + middle);
+                    StartCoroutine(GoToHighScoreScreen(3));
+                }
+                if (enterNameStep < 8)
+                    after = after.Substring(1);
+                else
+                    after = "";
+            }
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                charIndex--;
+                if (charIndex < 0)
+                    charIndex = characters.Length - 1;
+            }
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                charIndex++;
+                if (charIndex > characters.Length - 1)
+                    charIndex = 0;
+            }
+            middle = characters[charIndex];
+            enterName.text = before + middle + after;
+        }
     }
 }
