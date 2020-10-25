@@ -1252,6 +1252,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poacher: {fileID: 1243581637496900466, guid: 904b40ee3425b40438f3e0beae8effd5, type: 3}
   level: 0
+  gameOver: 0
   scoreText: {fileID: 1478263161}
   levelText: {fileID: 1229306657}
   escapedText: {fileID: 73346504}
@@ -1613,25 +1614,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sounds:
   - name: Begin Level
-    clip: {fileID: 8300000, guid: 098932c7c5c8a294ba29dcd02c28dfde, type: 3}
+    clip: {fileID: 8300000, guid: 317f2c43c5165384091abb7b9cf1722e, type: 3}
     volume: 1
     pitch: 1
     loop: 0
     source: {fileID: 0}
   - name: Hit
-    clip: {fileID: 8300000, guid: 21cc29fb42a7b004bb52b2564d70bfb0, type: 3}
+    clip: {fileID: 8300000, guid: 4c41908ee2cc91b41bb82e072a1fbecc, type: 3}
     volume: 1
     pitch: 1
     loop: 0
     source: {fileID: 0}
   - name: Miss
-    clip: {fileID: 8300000, guid: d5c1e9b1333c95c4bbe033d0bf105836, type: 3}
+    clip: {fileID: 8300000, guid: 073d241e279c7324cae9be5654a5f835, type: 3}
     volume: 1
     pitch: 1
     loop: 0
     source: {fileID: 0}
   - name: Roar
-    clip: {fileID: 8300000, guid: 77c6ec4f6a01bd3429633e69f51a3739, type: 3}
+    clip: {fileID: 8300000, guid: 3a5cca44dab6ae340bc3dd724c0cc2ee, type: 3}
     volume: 1
     pitch: 1
     loop: 0
