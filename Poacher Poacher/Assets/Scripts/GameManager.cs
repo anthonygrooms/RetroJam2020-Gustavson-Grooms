@@ -174,7 +174,6 @@ public class GameManager : MonoBehaviour
             print(i+" "+PlayerPrefs.GetString("hsp" + (i), ""));
         }
         yield return new WaitForSeconds(t);
-        PlayerPrefs.SetString("PreviousScene", "Game");
         SceneManager.LoadScene("HighScores");
     }
 
