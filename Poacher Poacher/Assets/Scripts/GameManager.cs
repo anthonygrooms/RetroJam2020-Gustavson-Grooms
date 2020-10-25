@@ -150,11 +150,6 @@ public class GameManager : MonoBehaviour
 
         bool newHigh = NewHighScore();
 
-        for (int i = 1; i <= 10; i++)
-        {
-            print(PlayerPrefs.GetInt("hs" + (i), 0));
-        }
-
         if (newHigh)
         {
             enterNameStep = 1;
@@ -173,6 +168,11 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator GoToHighScoreScreen(int t)
     {
+        for (int i = 1; i <= 10; i++)
+        {
+            print(i+" "+PlayerPrefs.GetInt("hs" + (i), 0));
+            print(i+" "+PlayerPrefs.GetString("hsp" + (i), ""));
+        }
         yield return new WaitForSeconds(t);
         SceneManager.LoadScene("HighScores");
     }
@@ -205,11 +205,17 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator Timer()
     {
-        while (enterNameTimer > 0)
+        while (enterNameTimer > 0 && enterNameStep < 9)
         {
             enterNameTimer--;
-            enterNameDirection.text = "ENTER NAME: " + enterNameTimer + "\nUSE LEFT, RIGHT ENTER";
+            enterNameDirection.text = "ENTER NAME: " + enterNameTimer + "\nUSE LEFT, RIGHT, ENTER";
             yield return new WaitForSeconds(1);
+        }
+        if (enterNameTimer == 0)
+        {
+            enterNameStep = 9;
+            PlayerPrefs.SetString("hsp" + newScoreIndex, before + middle + after);
+            StartCoroutine(GoToHighScoreScreen(3));
         }
     }
 
@@ -225,8 +231,7 @@ public class GameManager : MonoBehaviour
                     before += middle;
                 else
                 {
-                    print(before + middle);
-                    //PlayerPrefs.SetString("hsp" + newScoreIndex, before + middle);
+                    PlayerPrefs.SetString("hsp" + newScoreIndex, before + middle);
                     StartCoroutine(GoToHighScoreScreen(3));
                 }
                 if (enterNameStep < 8)
