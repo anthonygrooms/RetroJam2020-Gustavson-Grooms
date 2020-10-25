@@ -156,7 +156,6 @@ public class GameManager : MonoBehaviour
             enterName.enabled = true;
             enterNameDirection.enabled = true;
             before = "";
-            after = "AAAAAAA";
             StartCoroutine(Timer());
             gameOverText.enabled = false;
         }
@@ -174,6 +173,7 @@ public class GameManager : MonoBehaviour
             print(i+" "+PlayerPrefs.GetString("hsp" + (i), ""));
         }
         yield return new WaitForSeconds(t);
+        PlayerPrefs.SetString("PreviousScene", "Game");
         SceneManager.LoadScene("HighScores");
     }
 
@@ -207,15 +207,15 @@ public class GameManager : MonoBehaviour
     {
         while (enterNameTimer > 0 && enterNameStep < 9)
         {
-            enterNameDirection.text = "ENTER NAME: " + enterNameTimer + "\nUSE LEFT, RIGHT, ENTER";
+            enterNameDirection.text = "ENTER NAME: " + enterNameTimer + "\nUSE LEFT, RIGHT TO NAV, SPACE TO SELECT CHAR,ENTER TO SUBMIT";
             yield return new WaitForSeconds(1);
             enterNameTimer--;
         }
         if (enterNameTimer == 0)
         {
-            enterNameDirection.text = "ENTER NAME: " + enterNameTimer + "\nUSE LEFT, RIGHT, ENTER";
+            enterNameDirection.text = "ENTER NAME: " + enterNameTimer + "\nUSE LEFT, RIGHT TO NAV, SPACE TO SELECT CHAR,ENTER TO SUBMIT";
             enterNameStep = 9;
-            PlayerPrefs.SetString("hsp" + newScoreIndex, before + middle + after);
+            PlayerPrefs.SetString("hsp" + newScoreIndex, before + middle);
             StartCoroutine(GoToHighScoreScreen(3));
         }
     }
@@ -227,6 +227,12 @@ public class GameManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Return))
             {
+                enterNameStep = 9;
+                PlayerPrefs.SetString("hsp" + newScoreIndex, before + middle);
+                StartCoroutine(GoToHighScoreScreen(3));
+            }
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
                 enterNameStep++;
                 if (enterNameStep < 9)
                     before += middle;
@@ -235,10 +241,6 @@ public class GameManager : MonoBehaviour
                     PlayerPrefs.SetString("hsp" + newScoreIndex, before + middle);
                     StartCoroutine(GoToHighScoreScreen(3));
                 }
-                if (enterNameStep < 8)
-                    after = after.Substring(1);
-                else
-                    after = "";
             }
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
