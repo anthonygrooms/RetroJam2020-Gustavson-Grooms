@@ -1344,7 +1344,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: b680afeb8eadbed40a62f65fabdf2e6d, type: 3}
   enterName: {fileID: 692916528}
   enterNameDirection: {fileID: 1003166382}
-  enterNameTimer: 60
+  enterNameTimer: 5
 --- !u!4 &870300280
 Transform:
   m_ObjectHideFlags: 0

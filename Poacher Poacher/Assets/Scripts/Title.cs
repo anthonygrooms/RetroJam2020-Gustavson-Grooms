@@ -72,4 +72,10 @@ public class Title : MonoBehaviour
             PlayerPrefs.SetString("hsp" + i, "");
         }
     }
+
+    public void GoToHighScoreScreen()
+    {
+        PlayerPrefs.SetString("PreviousScene", "Title");
+        SceneManager.LoadScene("HighScores");
+    }
 }

@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator IntroAnimation()
     {
-        lion.GetComponent<Rigidbody2D>().velocity = new Vector2(-3.37f, 0);
+        lion.GetComponent<Rigidbody2D>().velocity = new Vector2(-3.2f, 0);
         int frame = 0;
         while (frame < 10)
         {
@@ -174,6 +174,7 @@ public class GameManager : MonoBehaviour
             print(i+" "+PlayerPrefs.GetString("hsp" + (i), ""));
         }
         yield return new WaitForSeconds(t);
+        PlayerPrefs.SetString("PreviousScene", "Game");
         SceneManager.LoadScene("HighScores");
     }
 
@@ -207,12 +208,13 @@ public class GameManager : MonoBehaviour
     {
         while (enterNameTimer > 0 && enterNameStep < 9)
         {
-            enterNameTimer--;
             enterNameDirection.text = "ENTER NAME: " + enterNameTimer + "\nUSE LEFT, RIGHT, ENTER";
             yield return new WaitForSeconds(1);
+            enterNameTimer--;
         }
         if (enterNameTimer == 0)
         {
+            enterNameDirection.text = "ENTER NAME: " + enterNameTimer + "\nUSE LEFT, RIGHT, ENTER";
             enterNameStep = 9;
             PlayerPrefs.SetString("hsp" + newScoreIndex, before + middle + after);
             StartCoroutine(GoToHighScoreScreen(3));
