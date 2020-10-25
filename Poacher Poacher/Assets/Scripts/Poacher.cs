@@ -88,7 +88,7 @@ public class Poacher : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButton(0) && !gM.gameOver)
+        if (Input.GetMouseButtonDown(0) && !gM.gameOver)
         {
             FindObjectOfType<Audio_Manager>().Play("Miss");
         }

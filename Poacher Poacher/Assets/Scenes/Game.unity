@@ -1637,6 +1637,12 @@ MonoBehaviour:
     pitch: 1
     loop: 0
     source: {fileID: 0}
+  - name: Game Over
+    clip: {fileID: 8300000, guid: 31601a43922f8f1438cdad001943bfb3, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
 --- !u!4 &1203943682
 Transform:
   m_ObjectHideFlags: 0
